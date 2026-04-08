@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Limit 0 Labs</title>
+  <meta name="description" content="The cost of building software is approaching zero. A lab at the limit.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #04000d;
+      --text: rgba(255,255,255,0.9);
+      --muted: rgba(255,255,255,0.35);
+      --accent1: #7c3aed;
+      --accent2: #06b6d4;
+      --glow: rgba(124,58,237,0.4);
+      --glass: rgba(255,255,255,0.04);
+      --glass-border: rgba(255,255,255,0.08);
+      --font: 'Sora', system-ui, sans-serif;
+      --mono: 'Space Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 15px;
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* CANVAS */
+    #cosmos {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* LAYOUT */
+    .page {
+      position: relative;
+      z-index: 1;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* NAV */
+    nav {
+      padding: 24px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+      background: rgba(4,0,13,0.6);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-star {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      animation: spin 8s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      padding: 6px 16px;
+      border: 1px solid var(--glass-border);
+      border-radius: 100px;
+      transition: all 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+      border-color: rgba(124,58,237,0.5);
+      background: rgba(124,58,237,0.1);
+    }
+
+    /* HERO */
+    .hero {
+      padding: 120px 0 100px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--accent2);
+      margin-bottom: 48px;
+      text-transform: uppercase;
+    }
+
+    .hero-badge::before, .hero-badge::after {
+      content: ' ✦ ';
+      opacity: 0.5;
+    }
+
+    .formula-container {
+      display: inline-block;
+      position: relative;
+      margin-bottom: 48px;
+    }
+
+    .formula-glow {
+      position: absolute;
+      inset: -30px;
+      background: radial-gradient(ellipse, rgba(124,58,237,0.25) 0%, transparent 70%);
+      animation: glow-pulse 3s ease-in-out infinite;
+      border-radius: 50%;
+    }
+
+    @keyframes glow-pulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.08); }
+    }
+
+    .hero-formula {
+      position: relative;
+      font-family: var(--mono);
+      font-size: clamp(24px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      padding: 28px 48px;
+      border: 1px solid;
+      border-image: linear-gradient(135deg, var(--accent1), var(--accent2)) 1;
+      background: linear-gradient(135deg, rgba(124,58,237,0.08), rgba(6,182,212,0.08));
+    }
+
+    .formula-gradient {
+      background: linear-gradient(135deg, #fff 0%, #c4b5fd 50%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-tagline {
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto 48px;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 14px 32px;
+      border-radius: 100px;
+      background: linear-gradient(135deg, var(--accent1), #4f46e5);
+      transition: opacity 0.2s, transform 0.2s;
+      box-shadow: 0 0 40px rgba(124,58,237,0.3);
+    }
+
+    .hero-cta:hover { opacity: 0.9; transform: translateY(-2px); }
+
+    /* SECTIONS */
+    section {
+      padding: 80px 0;
+    }
+
+    .section-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      border: 1px solid rgba(6,182,212,0.2);
+      border-radius: 100px;
+      padding: 5px 14px;
+      margin-bottom: 32px;
+    }
+
+    .section-title {
+      font-size: clamp(24px, 4vw, 40px);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #fff;
+      margin-bottom: 40px;
+      line-height: 1.2;
+    }
+
+    /* GLASS CARD */
+    .glass-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 32px;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(124,58,237,0.3);
+      background: rgba(124,58,237,0.06);
+    }
+
+    /* THESIS */
+    .thesis-paras {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .thesis-paras p {
+      font-size: 16px;
+      line-height: 1.85;
+      color: rgba(255,255,255,0.75);
+    }
+
+    .thesis-paras em {
+      color: var(--accent2);
+      font-style: normal;
+      font-weight: 500;
+    }
+
+    /* QUOTES */
+    .quotes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .quote-card {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .quote-top {
+      width: 28px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+    }
+
+    .quote-text {
+      font-size: 15px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.8);
+      flex: 1;
+    }
+
+    .quote-attr {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* EFFECTS */
+    .effects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .effect-card {}
+
+    .effect-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--accent1);
+      margin-bottom: 12px;
+    }
+
+    .effect-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .effect-text {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* CTA */
+    .cta-wrap {
+      text-align: center;
+      padding: 80px 0 100px;
+    }
+
+    .cta-formula {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+      letter-spacing: 0.05em;
+    }
+
+    .cta-title {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .cta-sub {
+      color: var(--muted);
+      font-size: 16px;
+      margin-bottom: 40px;
+    }
+
+    .cta-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 28px;
+      border-radius: 100px;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-gradient {
+      background: linear-gradient(135deg, var(--accent1), #4f46e5);
+      color: #fff;
+      box-shadow: 0 0 40px rgba(124,58,237,0.25);
+    }
+
+    .btn-gradient:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    .btn-ghost {
+      background: var(--glass);
+      color: var(--text);
+      border: 1px solid var(--glass-border);
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(6,182,212,0.4);
+      background: rgba(6,182,212,0.06);
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--glass-border);
+      padding: 28px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .footer-right {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* FADE IN */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .container { padding: 0 24px; }
+      .hero { padding: 80px 0 60px; }
+      .hero-formula { font-size: 20px; padding: 20px 28px; }
+      .effects-grid { grid-template-columns: 1fr; }
+      .quotes-grid { grid-template-columns: 1fr; }
+      .footer-inner { flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="cosmos"></canvas>
+
+  <div class="page">
+
+    <nav>
+      <div class="container">
+        <div class="nav-inner">
+          <a href="/" class="logo">
+            <span class="logo-star"></span>
+            LIMIT 0 LABS
+          </a>
+          <ul class="nav-links">
+            <!-- Replace # with your actual URLs -->
+            <li><a href="YOUR_LINKEDIN_URL" target="_blank" rel="noopener">LinkedIn</a></li>
+            <li><a href="YOUR_TWITTER_URL" target="_blank" rel="noopener">X / Twitter</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+
+      <div class="container">
+        <div class="hero">
+          <div class="hero-badge">A Lab at the Frontier</div>
+          <div class="formula-container">
+            <div class="formula-glow"></div>
+            <div class="hero-formula">
+              <span class="formula-gradient">lim (cost of software) → 0</span>
+            </div>
+          </div>
+          <p class="hero-tagline">The cost of building software is approaching zero.<br>We exist at that limit.</p>
+          <a href="#thesis" class="hero-cta">Explore the thesis ↓</a>
+        </div>
+      </div>
+
+      <div class="container">
+        <section id="thesis" class="fade-in">
+          <div class="section-chip">✦ The Thesis</div>
+          <h2 class="section-title">Software cost is converging on zero.<br>The implications are extraordinary.</h2>
+          <div class="thesis-paras">
+            <p>GPT-3.5 arrived. Then GitHub Copilot. Then Claude, Cursor, Codex. Each generation doubled capability and halved cost. Today, AI writes production code, debugs systems, and ships features autonomously. Jensen Huang said it plainly at CES 2025: <em>"The marginal cost of software is going to zero."</em></p>
+            <p>History says this won't shrink the software industry — it will explode it. When steam engines became more efficient, coal consumption rose. When spreadsheets made calculation free, firms hired more accountants. The car didn't contract the auto industry; it created one worth trillions. When building software costs nothing, the number of applications built trends toward infinity.</p>
+            <p>The second-order effects are vast. Distribution becomes the new moat. Hyper-niche software — too expensive to justify before — becomes viable overnight. Solo operators run portfolios of products. Agents become buyers. Software fragments and personalizes down to the individual. As Marc Andreessen put it: <em>"The amount of software in the world is about to explode by 1000x."</em></p>
+            <p>Limit 0 Labs exists at this frontier — shipping products across finance, design, and beyond — in a world where the only limit is ideas, not cost.</p>
+          </div>
+        </section>
+      </div>
+
+      <div class="container">
+        <section class="fade-in">
+          <div class="section-chip">✦ Signals from the Field</div>
+          <h2 class="section-title">The world's sharpest minds see it too.</h2>
+          <div class="quotes-grid">
+            <div class="glass-card quote-card">
+              <div class="quote-top"></div>
+              <p class="quote-text">"The hottest new programming language is English."</p>
+              <span class="quote-attr">ANDREJ KARPATHY — Co-founder, OpenAI</span>
+            </div>
+            <div class="glass-card quote-card">
+              <div class="quote-top"></div>
+              <p class="quote-text">"Everyone is now a programmer. You just have to say something to the computer."</p>
+              <span class="quote-attr">JENSEN HUANG — CEO, NVIDIA · CES 2025</span>
+            </div>
+            <div class="glass-card quote-card">
+              <div class="quote-top"></div>
+              <p class="quote-text">"The amount of software in the world is about to explode by 1000x."</p>
+              <span class="quote-attr">MARC ANDREESSEN — Co-founder, a16z</span>
+            </div>
+            <div class="glass-card quote-card">
+              <div class="quote-top"></div>
+              <p class="quote-text">"Free software written by AI will be as transformative as free information was with the internet."</p>
+              <span class="quote-attr">VINOD KHOSLA — Founder, Khosla Ventures</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="container">
+        <section class="fade-in">
+          <div class="section-chip">✦ Second-Order Effects</div>
+          <h2 class="section-title">When building is free, what changes?</h2>
+          <div class="effects-grid">
+            <div class="glass-card effect-card">
+              <div class="effect-num">// 01</div>
+              <div class="effect-title">Jevons Paradox</div>
+              <p class="effect-text">Cheaper software means more software — not less. Every efficiency gain unlocks an explosion of new applications across every domain and niche that was previously economically irrational to build.</p>
+            </div>
+            <div class="glass-card effect-card">
+              <div class="effect-num">// 02</div>
+              <div class="effect-title">The Long Tail</div>
+              <p class="effect-text">When dev cost drops from $500K to $500, hyper-niche products become viable businesses. Solo operators run portfolios serving the smallest, most specific markets imaginable.</p>
+            </div>
+            <div class="glass-card effect-card">
+              <div class="effect-num">// 03</div>
+              <div class="effect-title">Distribution as Moat</div>
+              <p class="effect-text">When anyone can build, those who reach, retain, and earn trust win. Building is the commodity. Brand, network effects, and distribution capture the value.</p>
+            </div>
+            <div class="glass-card effect-card">
+              <div class="effect-num">// 04</div>
+              <div class="effect-title">Agents as Buyers</div>
+              <p class="effect-text">AI agents are becoming purchasing decision-makers. SEO becomes AEO. Software needs to be agent-discoverable — machine-readable specs, programmatic trials, verifiable benchmarks.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="container">
+        <div class="cta-wrap fade-in">
+          <div class="cta-formula">// follow the lab</div>
+          <h2 class="cta-title">Building at the limit.</h2>
+          <p class="cta-sub">We publish ideas, ship products, and document the frontier.</p>
+          <div class="cta-btns">
+            <!-- Replace # with your actual URLs -->
+            <a href="YOUR_LINKEDIN_URL" target="_blank" rel="noopener" class="btn btn-gradient">Follow on LinkedIn</a>
+            <a href="YOUR_TWITTER_URL" target="_blank" rel="noopener" class="btn btn-ghost">Follow on X</a>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-inner">
+          <div class="footer-logo">
+            <span class="logo-star" style="width:6px;height:6px;"></span>
+            LIMIT 0 LABS
+          </div>
+          <div class="footer-right">lim (cost) → 0 · © 2025</div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // Particle field
+    const canvas = document.getElementById('cosmos');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles;
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function initParticles() {
+      particles = Array.from({ length: 140 }, () => ({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.2 + 0.3,
+        vx: (Math.random() - 0.5) * 0.12,
+        vy: (Math.random() - 0.5) * 0.12,
+        alpha: Math.random() * 0.5 + 0.1,
+      }));
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(196,181,253,${p.alpha})`;
+        ctx.fill();
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < -5) p.x = W + 5;
+        if (p.x > W + 5) p.x = -5;
+        if (p.y < -5) p.y = H + 5;
+        if (p.y > H + 5) p.y = -5;
+      });
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', () => { resize(); initParticles(); });
+    resize();
+    initParticles();
+    draw();
+
+    // Scroll fade-in
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>

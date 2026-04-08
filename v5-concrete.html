@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Limit 0 Labs</title>
+  <meta name="description" content="The cost of building software is approaching zero. A lab at the limit.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+      --muted: #888888;
+      --border: #e0e0e0;
+      --serif: 'Georgia', 'Times New Roman', serif;
+      --sans: 'Helvetica Neue', 'Arial', sans-serif;
+      --mono: 'Courier New', 'Courier', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* NAV */
+    nav {
+      padding: 32px 0;
+      border-bottom: 1px solid var(--text);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    /* HERO */
+    .hero {
+      padding: 100px 0 80px;
+      border-bottom: 1px solid var(--text);
+    }
+
+    .limit-formula {
+      margin-bottom: 48px;
+    }
+
+    .limit-outer {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 0;
+    }
+
+    .limit-lim {
+      font-family: var(--sans);
+      font-size: clamp(56px, 9vw, 100px);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .limit-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .limit-expression {
+      font-family: var(--sans);
+      font-size: clamp(56px, 9vw, 100px);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .limit-subscript {
+      font-family: var(--mono);
+      font-size: clamp(12px, 1.5vw, 18px);
+      color: var(--muted);
+      padding-left: 4px;
+      line-height: 1;
+      margin-top: 2px;
+    }
+
+    .hero-statement {
+      font-family: var(--sans);
+      font-size: clamp(18px, 2.5vw, 26px);
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.4;
+      max-width: 560px;
+      margin-bottom: 40px;
+    }
+
+    .hero-emphasis {
+      font-weight: 700;
+    }
+
+    .hero-note {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 40px;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--text);
+      padding-bottom: 2px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .hero-cta:hover {
+      color: var(--muted);
+      border-color: var(--muted);
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 40px;
+      letter-spacing: 0.1em;
+    }
+
+    /* THESIS */
+    .thesis-text {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      max-width: 680px;
+    }
+
+    .thesis-text p {
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text);
+    }
+
+    .thesis-text strong {
+      font-weight: 600;
+    }
+
+    /* BLOCKQUOTE */
+    .standalone-quote {
+      padding: 0 0 0 32px;
+      border-left: 3px solid var(--text);
+      margin: 40px 0;
+    }
+
+    .standalone-quote p {
+      font-family: var(--serif);
+      font-size: clamp(18px, 2.5vw, 24px);
+      font-style: italic;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .standalone-quote cite {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      font-style: normal;
+    }
+
+    /* QUOTES */
+    .quotes-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .quotes-table tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .quotes-table tr:last-child {
+      border-bottom: none;
+    }
+
+    .quotes-table td {
+      padding: 28px 0;
+      vertical-align: top;
+    }
+
+    .quotes-table td:first-child {
+      width: 200px;
+      padding-right: 40px;
+    }
+
+    .q-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .q-title {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .q-text {
+      font-family: var(--serif);
+      font-size: 17px;
+      font-style: italic;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    /* EFFECTS */
+    .effects-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .effect-row {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 40px;
+      padding: 36px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+
+    .effect-row:last-child { border-bottom: none; }
+
+    .effect-left {}
+
+    .effect-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    .effect-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .effect-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #333;
+    }
+
+    /* CTA */
+    .cta-section {
+      padding: 80px 0;
+      border-bottom: none;
+    }
+
+    .cta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+    }
+
+    .cta-left-text {
+      font-size: clamp(24px, 4vw, 40px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .cta-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.15s;
+    }
+
+    .btn-black {
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    .btn-black:hover { background: #333; }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--text);
+    }
+
+    .btn-outline:hover {
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--text);
+      padding: 28px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-logo {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .footer-formula {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 700px) {
+      .container { padding: 0 24px; }
+      .hero { padding: 64px 0 56px; }
+      .quotes-table, .quotes-table tbody, .quotes-table tr, .quotes-table td {
+        display: block;
+        width: 100%;
+        padding: 0;
+      }
+      .quotes-table tr { padding: 24px 0; border-bottom: 1px solid var(--border); }
+      .quotes-table td:first-child { width: 100%; margin-bottom: 12px; padding-right: 0; }
+      .effect-row { grid-template-columns: 1fr; gap: 12px; }
+      .cta-row { flex-direction: column; align-items: flex-start; }
+      .cta-buttons { flex-direction: row; flex-wrap: wrap; }
+      .footer-inner { flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container">
+      <div class="nav-inner">
+        <a href="/" class="logo">Limit 0 Labs</a>
+        <ul class="nav-links">
+          <!-- Replace # with your actual URLs -->
+          <li><a href="YOUR_LINKEDIN_URL" target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a href="YOUR_TWITTER_URL" target="_blank" rel="noopener">X / Twitter</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+
+    <div class="container">
+      <section class="hero">
+        <div class="limit-formula">
+          <div class="limit-outer">
+            <span class="limit-lim">lim</span>
+            <div class="limit-right">
+              <span class="limit-expression">&nbsp;cost = 0</span>
+              <span class="limit-subscript">t &rarr; &infin;</span>
+            </div>
+          </div>
+        </div>
+        <p class="hero-statement">
+          The cost of building software<br>
+          is <span class="hero-emphasis">approaching zero.</span>
+        </p>
+        <p class="hero-note">This is not a metaphor.</p>
+        <a href="#thesis" class="hero-cta">Read the thesis &darr;</a>
+      </section>
+    </div>
+
+    <div class="container">
+      <section id="thesis">
+        <div class="section-num">§1 &mdash; The Thesis</div>
+        <div class="thesis-text">
+          <p>
+            GPT-3.5 arrived. Then GitHub Copilot. Then Claude, Cursor, Codex. Each generation doubled capability and halved cost. Today, AI writes production code, debugs systems, and ships features autonomously. Jensen Huang said it plainly at CES 2025: <strong>"The marginal cost of software is going to zero."</strong>
+          </p>
+
+          <div class="standalone-quote">
+            <p>The hottest new programming language is English.</p>
+            <cite>&mdash; Andrej Karpathy, Co-founder OpenAI</cite>
+          </div>
+
+          <p>
+            History says this won't shrink the software industry — it will explode it. When steam engines became more efficient, coal consumption rose. When spreadsheets made calculation free, firms hired more accountants. The car didn't contract the auto industry; it created one worth trillions. When building software costs nothing, the number of applications built trends toward infinity.
+          </p>
+          <p>
+            The second-order effects are vast. Distribution becomes the new moat. Hyper-niche software — too expensive to justify before — becomes viable overnight. Solo operators run portfolios of products. Agents become buyers. Software fragments and personalizes down to the individual. As Marc Andreessen put it: <strong>"The amount of software in the world is about to explode by 1000x."</strong>
+          </p>
+          <p>
+            Limit 0 Labs exists at this frontier — shipping products across finance, design, and beyond — in a world where the only limit is ideas, not cost.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <div class="container">
+      <section>
+        <div class="section-num">§2 &mdash; Signals from the Field</div>
+        <table class="quotes-table">
+          <tbody>
+            <tr>
+              <td>
+                <div class="q-name">Jensen Huang</div>
+                <div class="q-title">CEO, NVIDIA<br>CES 2025</div>
+              </td>
+              <td>
+                <p class="q-text">"Everyone is now a programmer. You just have to say something to the computer."</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="q-name">Marc Andreessen</div>
+                <div class="q-title">Co-founder, a16z</div>
+              </td>
+              <td>
+                <p class="q-text">"AI is going to make the cost of building software approach zero. The amount of software in the world is about to explode by 1000x."</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="q-name">Vinod Khosla</div>
+                <div class="q-title">Founder, Khosla Ventures</div>
+              </td>
+              <td>
+                <p class="q-text">"Free software written by AI will be as transformative as free information was with the internet."</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="q-name">Sam Altman</div>
+                <div class="q-title">CEO, OpenAI</div>
+              </td>
+              <td>
+                <p class="q-text">"We may see the first AI agents join the workforce and materially change the output of companies."</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <div class="container">
+      <section>
+        <div class="section-num">§3 &mdash; Second-Order Effects</div>
+        <div class="effects-list">
+          <div class="effect-row">
+            <div class="effect-left">
+              <div class="effect-label">Effect 01</div>
+              <div class="effect-title">Jevons Paradox</div>
+            </div>
+            <p class="effect-body">In 1865, William Jevons observed that more efficient steam engines increased total coal consumption — not decreased it. Cheaper software doesn't mean less software. It means an explosion of applications across every domain and niche previously too costly to justify.</p>
+          </div>
+          <div class="effect-row">
+            <div class="effect-left">
+              <div class="effect-label">Effect 02</div>
+              <div class="effect-title">The Long Tail</div>
+            </div>
+            <p class="effect-body">When development cost drops from $500K to $500, a product serving 500 users at $10/month becomes a viable one-person business. Solo operators run portfolios of hyper-niche products. The market becomes infinitely fragmented.</p>
+          </div>
+          <div class="effect-row">
+            <div class="effect-left">
+              <div class="effect-label">Effect 03</div>
+              <div class="effect-title">Distribution as Moat</div>
+            </div>
+            <p class="effect-body">When anyone can build, those who reach, retain, and earn trust win. Building is the commodity. Brand, network effects, and distribution capture the value. Joel Spolsky observed this in 2002; it applies with full force today.</p>
+          </div>
+          <div class="effect-row">
+            <div class="effect-left">
+              <div class="effect-label">Effect 04</div>
+              <div class="effect-title">Agents as Buyers</div>
+            </div>
+            <p class="effect-body">AI agents are becoming purchasing decision-makers. SEO becomes AEO — Agent Engine Optimization. Software needs to be agent-discoverable: machine-readable capability descriptions, verifiable benchmarks, programmatic trial environments.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="container">
+      <section class="cta-section">
+        <div class="cta-row">
+          <div class="cta-left-text">
+            Follow<br>the lab.
+          </div>
+          <div class="cta-buttons">
+            <!-- Replace # with your actual URLs -->
+            <a href="YOUR_LINKEDIN_URL" target="_blank" rel="noopener" class="btn btn-black">LinkedIn &nearr;</a>
+            <a href="YOUR_TWITTER_URL" target="_blank" rel="noopener" class="btn btn-outline">X / Twitter &nearr;</a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-logo">Limit 0 Labs</div>
+        <div class="footer-formula">lim(cost) &rarr; 0 &nbsp;&middot;&nbsp; &copy; 2025</div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
